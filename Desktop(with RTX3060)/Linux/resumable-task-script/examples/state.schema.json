@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/resumable-task-state.schema.json",
+  "title": "Resumable task state (reference)",
+  "description": "Optional reference schema. Design the state shape for the task instead of copying this blindly. Additional properties are allowed.",
+  "type": "object",
+  "required": ["schema_version", "phase", "status", "steps"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "phase": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in_progress", "awaiting_reboot", "failed", "done"]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "last_error": {
+      "type": ["string", "null"]
+    },
+    "system": {
+      "type": "object",
+      "description": "Optional machine fingerprint used to detect a reinstall or wrong host.",
+      "additionalProperties": true
+    },
+    "boot_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "object",
+      "description": "Per-phase state. Values are usually pending, in_progress, done, failed, or skipped.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "checks": {
+      "type": "array",
+      "description": "Automatic and user-confirmed functional checks.",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "status"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["auto", "confirm"]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pass", "fail", "skipped"]
+          },
+          "question": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "boot_id": {
+            "type": "string"
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "transactions": {
+      "type": "array",
+      "description": "External operations needed for rollback or audit.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}
